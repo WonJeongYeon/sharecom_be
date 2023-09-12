@@ -17,4 +17,4 @@ public interface PartsRepository extends JpaRepository<Parts, Integer> {
             + " or c.name LIKE CONCAT('%', :name, '%')) and (:serial is null or c.serial LIKE CONCAT('%', :serial, '%')) and (:buyAt is null or c.buyAt = :buyAt)")
     List<GetPartsDto> findAllByTypeAndNameAndSerialAndBuyAt(Parts.Type type, String name, String serial, LocalDate buyAt);
 }
- 
+
