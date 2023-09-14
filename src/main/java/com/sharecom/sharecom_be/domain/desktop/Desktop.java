@@ -1,5 +1,6 @@
 package com.sharecom.sharecom_be.domain.desktop;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sharecom.sharecom_be.domain.parts.Parts;
 import com.sharecom.sharecom_be.entity.BaseEntity;
 import lombok.*;
@@ -35,30 +36,37 @@ public class Desktop extends BaseEntity {
 
     @JoinColumn(name = "cpu_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Parts cpuId;
 
     @JoinColumn(name = "board_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Parts boardId;
 
     @JoinColumn(name = "gpu_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Parts gpuId;
 
     @JoinColumn(name = "ram_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Parts ramId;
 
     @JoinColumn(name = "power_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Parts powerId;
 
     @JoinColumn(name = "cooler_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Parts coolerId;
 
     @JoinColumn(name = "ssd_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Parts ssdId;
 
     @Builder

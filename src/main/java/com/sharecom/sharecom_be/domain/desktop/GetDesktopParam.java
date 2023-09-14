@@ -12,5 +12,5 @@ import lombok.Setter;
 public class GetDesktopParam {
 
     private String serial;
-    private boolean usedYn;
+    private Boolean usedYn;
 }

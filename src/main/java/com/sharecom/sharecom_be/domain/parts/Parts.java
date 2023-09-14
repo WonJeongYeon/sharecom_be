@@ -56,4 +56,8 @@ public class Parts extends BaseEntity {
         this.usedAt = usedAt;
         this.type = type;
     }
+
+    public void updateUsedYn(boolean usedYn) {
+        this.usedYn = usedYn;
+    }
 }

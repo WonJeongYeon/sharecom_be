@@ -12,4 +12,6 @@ public class GetPartsParam {
     private String name;
     private String serial;
     private String buy_at;
+    private String etc;
+    private Boolean usedYn;
 }
