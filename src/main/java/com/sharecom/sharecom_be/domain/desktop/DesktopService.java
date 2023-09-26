@@ -3,6 +3,7 @@ package com.sharecom.sharecom_be.domain.desktop;
 import com.sharecom.sharecom_be.domain.parts.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.NonUniqueResultException;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -18,6 +19,7 @@ public class DesktopService {
     private final DesktopRepository desktopRepository;
     private final PartsRepository partsRepository;
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
     public List<GetDesktopDto> getDesktop(GetDesktopParam getDesktopParam) throws ParseException {
 
         List<GetDesktopDto> desktopList = desktopRepository.findAllByUsedYn(getDesktopParam.getUsedYn());
@@ -54,6 +56,9 @@ public class DesktopService {
 
     public String addDesktop(PostDesktopReq postDesktopReq) {
         String result;
+        if (desktopRepository.existsBySerial(postDesktopReq.getSerial())) {
+            return "이미 존재하는 본체 고유번호입니다.";
+        }
         try {
             desktopRepository.saveDesktop(postDesktopReq.getSerial(),
                     postDesktopReq.getEtc(),

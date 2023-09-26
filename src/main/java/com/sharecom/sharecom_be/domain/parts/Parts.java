@@ -59,5 +59,27 @@ public class Parts extends BaseEntity {
 
     public void updateUsedYn(boolean usedYn) {
         this.usedYn = usedYn;
+        this.usedAt = LocalDate.now();
+    }
+
+
+    public void updateSerial(String serial) {
+        this.serial = serial;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateEtc(String etc) {
+        this.etc = etc;
+    }
+
+    public void updateState(State state) {
+        this.state = state;
+    }
+
+    public void updateType(String type) {
+        this.type = Type.valueOf(type);
     }
 }

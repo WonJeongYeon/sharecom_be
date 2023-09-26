@@ -1,8 +1,10 @@
 package com.sharecom.sharecom_be.domain.parts;
 
+import com.sharecom.sharecom_be.entity.BaseEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.Proxy;
 import java.text.ParseException;
@@ -42,7 +44,7 @@ public class PartsService {
             type = null;
         }
 
-        List<GetPartsDto> parts = partsRepository.findAllByTypeAndNameAndSerialAndBuyAt(type, getPartsParam.getName(), getPartsParam.getSerial(), localDate, getPartsParam.getEtc(), getPartsParam.getUsedYn());
+        List<GetPartsDto> parts = partsRepository.findAllByTypeAndNameAndSerialAndBuyAt(type, getPartsParam.getName(), getPartsParam.getSerial(), localDate, getPartsParam.getEtc(), getPartsParam.getUsedYn(), BaseEntity.State.ACTIVE);
 
         return parts;
     }
@@ -78,5 +80,29 @@ public class PartsService {
             result = "실패";
         }
         return result;
+    }
+
+    @Transactional
+    public void patchParts(int partsId, PatchPartsDto patchPartsDto) {
+        Parts parts = partsRepository.findById(partsId).orElseThrow();
+        if (patchPartsDto.getSerial() != null) {
+            parts.updateSerial(patchPartsDto.getSerial());
+        }
+        if (patchPartsDto.getName() != null) {
+            parts.updateName(patchPartsDto.getName());
+        }
+        if (patchPartsDto.getEtc() != null) {
+            parts.updateEtc(patchPartsDto.getEtc());
+        }
+        if (patchPartsDto.getType() != null) {
+            parts.updateType(patchPartsDto.getType());
+        }
+        log.info(parts.toString());
+    }
+
+    @Transactional
+    public void deleteParts(int partsId) {
+        Parts parts = partsRepository.findById(partsId).orElseThrow();
+        parts.updateState(BaseEntity.State.INACTIVE);
     }
 }

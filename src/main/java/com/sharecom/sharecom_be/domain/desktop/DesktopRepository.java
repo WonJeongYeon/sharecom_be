@@ -25,5 +25,7 @@ public interface DesktopRepository extends JpaRepository<Desktop, Integer> {
     @Query(value = "insert into desktop (serial, etc, used_yn, board_id, cooler_id, cpu_id, gpu_id, power_id, ram_id, ssd_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         nativeQuery = true)
     void saveDesktop(String serial, String etc, boolean used_yn, int board_id, int cooler_id, int cpu_id, int gpu_id, int power_id, int ram_id, int ssd_id);
+
+    boolean existsBySerial(String serial);
 }
 
