@@ -1,6 +1,7 @@
 package com.sharecom.sharecom_be.domain.desktop;
 
 
+import com.sharecom.sharecom_be.domain.desktop.DTO.*;
 import com.sharecom.sharecom_be.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -46,5 +47,29 @@ public class DesktopController {
     public BaseResponse<String> addDesktop(@RequestBody PostDesktopReq postDesktopReq) {
         String result = desktopService.addDesktop(postDesktopReq);
         return new BaseResponse<>(result);
+    }
+
+    @PatchMapping("/{desktopId}")
+    @Operation(summary = "본체 정보 변경", description = "본체 정보를 변경합니다.")
+    @ResponseBody
+    public BaseResponse<String> modifyDesktop(@PathVariable int desktopId, @RequestBody PatchDesktopDto patchDesktopDto) {
+
+        String result;
+        try {
+            desktopService.modifyDesktop(desktopId, patchDesktopDto);
+            result = "성공";
+        } catch (Exception e) {
+            result = "실패";
+        }
+        return new BaseResponse<>(result);
+    }
+
+    @DeleteMapping("/{desktopId}")
+    @Operation(summary = "본체 정보 삭제", description = "본체 정보를 삭제합니다.")
+    @ResponseBody
+    public BaseResponse<String> deleteDesktop(@PathVariable int desktopId) {
+
+        desktopService.deleteDesktop(desktopId);
+        return new BaseResponse<>("");
     }
 }

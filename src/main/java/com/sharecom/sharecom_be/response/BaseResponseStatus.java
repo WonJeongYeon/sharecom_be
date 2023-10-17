@@ -32,6 +32,7 @@ public enum BaseResponseStatus {
     HttpStatus.BAD_REQUEST
   ),
   POST_TEST_EXISTS_MEMO("중복된 메모입니다.", HttpStatus.BAD_REQUEST),
+  UNKNOWN_PARTS_TYPE("잘못된 부품 종류입니다.", HttpStatus.BAD_REQUEST),
   WS_INVALID_TYPE(
     "잘못된 요청 타입입니다. (ONLY AVAILABLE SEND/DELETE)",
     HttpStatus.BAD_REQUEST
@@ -55,12 +56,14 @@ public enum BaseResponseStatus {
   INVALID_USER_JWT("권한이 없는 유저의 접근입니다.", HttpStatus.FORBIDDEN),
   NOT_FIND_USER("일치하는 유저가 없습니다.", HttpStatus.NOT_FOUND),
   NOT_EXISTS_USER("존재하지 않는 사용자입니다.", HttpStatus.NOT_FOUND),
+  NOT_EXISTS_DESKTOP("존재하지 않는 PC입니다.", HttpStatus.NOT_FOUND),
   INVALID_OAUTH_TYPE(
     "알 수 없는 소셜 로그인 형식입니다.",
     HttpStatus.BAD_REQUEST
   ),
   NOT_EXISTS_CHAT_ROOM("존재하지 않는 채팅방입니다.", HttpStatus.NOT_FOUND),
   NOT_EXISTS_CHAT_LOG("잘못된 채팅 고유값입니다.", HttpStatus.NOT_FOUND),
+  USED_DESKTOP("대여 중인 PC는 삭제할 수 없습니다.", HttpStatus.BAD_REQUEST),
 
   /**
    * 500 :  Database, Server 오류

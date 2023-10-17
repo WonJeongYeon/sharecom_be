@@ -1,4 +1,4 @@
-package com.sharecom.sharecom_be.domain.desktop;
+package com.sharecom.sharecom_be.domain.desktop.DTO;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.sharecom.sharecom_be.domain.desktop;
+package com.sharecom.sharecom_be.domain.desktop.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sharecom.sharecom_be.domain.parts.Parts;
@@ -28,7 +28,7 @@ public class GetDetailDesktopDto {
     @Builder
     @AllArgsConstructor
     @Getter
-    static class PartsDto {
+    public static class PartsDto {
         private int id;
         private String name;
         private String serial;

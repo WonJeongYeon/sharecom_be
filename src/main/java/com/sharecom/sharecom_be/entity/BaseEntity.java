@@ -26,7 +26,7 @@ public class BaseEntity {
 
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "state", nullable = false, length = 10)
+    @Column(name = "state", nullable = false, length = 10, columnDefinition = "VARCHAR(10) default \"ACTIVE\"")
     protected State state = State.ACTIVE;
     public enum State {
         ACTIVE, INACTIVE;

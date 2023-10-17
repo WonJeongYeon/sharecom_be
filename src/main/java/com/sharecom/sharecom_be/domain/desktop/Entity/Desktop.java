@@ -1,9 +1,12 @@
-package com.sharecom.sharecom_be.domain.desktop;
+package com.sharecom.sharecom_be.domain.desktop.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sharecom.sharecom_be.domain.parts.Parts;
 import com.sharecom.sharecom_be.entity.BaseEntity;
+import com.sharecom.sharecom_be.exception.BaseException;
+import com.sharecom.sharecom_be.response.BaseResponseStatus;
 import lombok.*;
+import net.bytebuddy.utility.nullability.UnknownNull;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -84,4 +87,26 @@ public class Desktop extends BaseEntity {
         this.coolerId = coolerId;
         this.ssdId = ssdId;
     }
+
+    public void updateEtc(String etc) {
+        this.etc = etc;
+    }
+
+    public void updateParts(Parts.Type type, Parts parts) {
+        switch (type) {
+            case CPU -> this.cpuId = parts;
+            case GPU -> this.gpuId = parts;
+            case MAIN_BOARD -> this.boardId = parts;
+            case RAM -> this.ramId = parts;
+            case SSD -> this.ssdId = parts;
+            case POWER -> this.powerId = parts;
+            case COOLER -> this.coolerId = parts;
+            default -> throw new BaseException(BaseResponseStatus.UNKNOWN_PARTS_TYPE);
+        }
+    }
+
+    public void deleteDesktop(State state) {
+        this.state = state;
+    }
+
 }
