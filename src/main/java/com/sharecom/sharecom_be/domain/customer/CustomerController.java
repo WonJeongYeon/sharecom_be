@@ -1,0 +1,47 @@
+package com.sharecom.sharecom_be.domain.customer;
+
+
+import com.sharecom.sharecom_be.domain.customer.DTO.GetAllCustomerDto;
+import com.sharecom.sharecom_be.domain.customer.DTO.GetCustomerParam;
+import com.sharecom.sharecom_be.domain.customer.DTO.PostCustomerReq;
+import com.sharecom.sharecom_be.domain.desktop.DTO.*;
+import com.sharecom.sharecom_be.domain.desktop.DesktopService;
+import com.sharecom.sharecom_be.response.BaseResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
+
+
+@Slf4j
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/customer")
+public class CustomerController {
+
+    private final CustomerService customerService;
+
+    @GetMapping("")
+    @Operation(summary = "고객 목록 조회", description = "고객 목록을 조회합니다. 파라미터로 검색 조건을 활성화할 수 있습니다.")
+    @ResponseBody
+    public BaseResponse<List<GetAllCustomerDto>> getAllCustomers(GetCustomerParam getCustomerParam) {
+
+        return new BaseResponse<>(customerService.getAllCustomer(getCustomerParam));
+    }
+
+    @PostMapping("")
+    @Operation(summary = "고객 정보 등록", description = "고객 정보를 등록합니다.")
+    @ResponseBody
+    public BaseResponse<Integer> addCustomer(@RequestBody PostCustomerReq postCustomerReq) {
+//        log.info(postCustomerReq.getName() + "씨는 " + postCustomerReq.getBirth() + "생일");
+//        log.info(Arrays.toString(postCustomerReq.getPc()));
+
+//        int id = customerService.addCustomer(postCustomerReq);
+        int id = 5;
+        return new BaseResponse<>(id);
+    }
+}
