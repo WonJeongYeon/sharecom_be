@@ -21,5 +21,9 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
             " and c.state = :state ORDER BY c.name")
     List<GetAllCustomerDto> findAllByAny(String name, String phone, String address, String etc, BaseEntity.State state);
 
+    @Query("update Customer c set c.rentalState = :rentalState where c.id = :id")
+    @Modifying
+    @Transactional
+    void updateCustomer(boolean rentalState, int id);
 }
 

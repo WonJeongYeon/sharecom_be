@@ -27,5 +27,10 @@ public interface DesktopRepository extends JpaRepository<Desktop, Integer> {
     int saveDesktop(String serial, String etc, boolean used_yn, int board_id, int cooler_id, int cpu_id, int gpu_id, int power_id, int ram_id, int ssd_id);
 
     boolean existsBySerial(String serial);
+
+    @Query("update Desktop c set c.usedYn = :usedYn where c.id = :id")
+    @Modifying
+    @Transactional
+    void updateDesktop(boolean usedYn, int id);
 }
 

@@ -40,8 +40,8 @@ public class CustomerController {
 //        log.info(postCustomerReq.getName() + "씨는 " + postCustomerReq.getBirth() + "생일");
 //        log.info(Arrays.toString(postCustomerReq.getPc()));
 
-//        int id = customerService.addCustomer(postCustomerReq);
-        int id = 5;
+        int id = customerService.addCustomer(postCustomerReq);
+//        int id = 5;
         return new BaseResponse<>(id);
     }
 }
