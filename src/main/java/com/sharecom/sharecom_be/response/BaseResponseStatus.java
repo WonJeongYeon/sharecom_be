@@ -46,6 +46,7 @@ public enum BaseResponseStatus {
     "존재하지 않는 계정이거나 잘못된 비밀번호입니다.",
     HttpStatus.NOT_FOUND
   ),
+  FAILED_TO_SAVE_RENTAL("대여정보 저장에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
   EMPTY_JWT("JWT를 입력해주세요.", HttpStatus.UNAUTHORIZED),
   INVALID_JWT("유효하지 않은 JWT입니다.", HttpStatus.UNAUTHORIZED),
   INVALID_REFRESH(
