@@ -1,9 +1,13 @@
 package com.sharecom.sharecom_be.domain.desktop;
 
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sharecom.sharecom_be.domain.desktop.DTO.*;
 import com.sharecom.sharecom_be.domain.desktop.DTO.GetDetailDesktopDto;
 import com.sharecom.sharecom_be.domain.desktop.Entity.Desktop;
 import com.sharecom.sharecom_be.domain.desktop.Entity.DesktopLogs;
+import com.sharecom.sharecom_be.domain.desktop.Entity.QDesktop;
+import com.sharecom.sharecom_be.domain.desktop.Entity.QDesktopLogs;
 import com.sharecom.sharecom_be.domain.parts.*;
 import com.sharecom.sharecom_be.entity.BaseEntity;
 import com.sharecom.sharecom_be.exception.BaseException;
@@ -19,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -28,6 +34,9 @@ public class DesktopService {
     private final PartsRepository partsRepository;
     private final DesktopLogsRepository desktopLogsRepository;
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    private final JPAQueryFactory jpaQueryFactory;
+    QDesktop qDesktop = QDesktop.desktop;
+    QDesktopLogs qDesktopLogs = QDesktopLogs.desktopLogs;
 
     public List<GetDesktopDto> getDesktop(GetDesktopParam getDesktopParam) throws ParseException {
 
@@ -99,7 +108,7 @@ public class DesktopService {
         DesktopLogs desktopLogs = DesktopLogs.builder()
                 .reason("새 PC 생성")
                 .type(DesktopLogs.Type.NEW_DESKTOP)
-                .desktopId(desktopRepository.findById(id).orElseThrow())
+                .desktopId(desktopRepository.findBySerial(postDesktopReq.getSerial()))
                 .etc(null)
                 .newParts(null)
                 .oldParts(null)
@@ -116,6 +125,7 @@ public class DesktopService {
                 .name(parts.getName())
                 .serial(parts.getSerial())
                 .etc(parts.getEtc())
+                .usedYn(parts.isUsedYn())
                 .build();
     }
 
@@ -168,6 +178,13 @@ public class DesktopService {
         }
         desktop.deleteDesktop(BaseEntity.State.INACTIVE);
 
+        DesktopLogs desktopLogs = DesktopLogs.builder()
+                .desktopId(desktop)
+                .reason("삭제")
+                .type(DesktopLogs.Type.DELETE_DESKTOP)
+                .build();
+        desktopLogsRepository.save(desktopLogs);
+
         List<Integer> list = new ArrayList<>();
         list.add(desktop.getBoardId().getId());
         list.add(desktop.getCoolerId().getId());
@@ -177,5 +194,69 @@ public class DesktopService {
         list.add(desktop.getRamId().getId());
         list.add(desktop.getSsdId().getId());
         partsRepository.updateParts(false, list);
+    }
+
+
+    @Transactional
+    public String restoreDesktop(int desktopId) {
+        Desktop desktop = desktopRepository.findById(desktopId).orElseThrow(() -> new BaseException(BaseResponseStatus.NOT_EXISTS_DESKTOP));
+
+        desktop.deleteDesktop(BaseEntity.State.ACTIVE);
+
+        DesktopLogs desktopLogs = DesktopLogs.builder()
+                .desktopId(desktop)
+                .reason("복구")
+                .type(DesktopLogs.Type.RESTORE_DESKTOP)
+                .build();
+        desktopLogsRepository.save(desktopLogs);
+
+        List<Integer> list = new ArrayList<>();
+        list.add(desktop.getBoardId().getId());
+        list.add(desktop.getCoolerId().getId());
+        list.add(desktop.getCpuId().getId());
+        list.add(desktop.getGpuId().getId());
+        list.add(desktop.getPowerId().getId());
+        list.add(desktop.getRamId().getId());
+        list.add(desktop.getSsdId().getId());
+        partsRepository.updateParts(true, list);
+        return "성공";
+    }
+
+    public List<GetDeletedDesktopDto> getDeletedDesktop() {
+//        List<Desktop> deletedDesktopList = desktopRepository.findByState(BaseEntity.State.INACTIVE);
+
+        List<GetDeletedDesktopDto> deletedDesktopDtoList = jpaQueryFactory.selectFrom(qDesktop).leftJoin(qDesktopLogs).on(qDesktopLogs.desktopId.id.eq(qDesktop.id))
+                .where(qDesktop.state.eq(BaseEntity.State.INACTIVE))
+                .transform(groupBy(qDesktop.id).list(Projections.fields(GetDeletedDesktopDto.class,
+                        qDesktop.id,
+                        qDesktop.serial,
+                        qDesktopLogs.createdAt.as("deletedAt"))));
+
+        return deletedDesktopDtoList;
+    }
+
+    public List<GetDesktopLogsDto> getDetailDesktopLogs(String serial) {
+
+        Desktop desktop = desktopRepository.findBySerial(serial);
+        List<DesktopLogs> desktopLogs = desktopLogsRepository.findAllByDesktopId(desktop);
+        List<GetDesktopLogsDto> list = new ArrayList<>();
+        for (DesktopLogs d: desktopLogs) {
+            String content = "";
+            switch (d.getType()) {
+                case NEW_DESKTOP, DELETE_DESKTOP -> content = "-";
+                case UPDATE_DESKTOP -> content = "기타사항 변경 : " + d.getEtc();
+                case PARTS_CHANGED -> content = d.getPartsType().name() + "변경, " +
+                d.getOldParts().getName() + " -> " + d.getNewParts().getName();
+                default -> {}
+            }
+            GetDesktopLogsDto getDesktopLogsDto = GetDesktopLogsDto.builder()
+                    .insertAt(d.getCreatedAt())
+                    .reason(d.getReason())
+                    .type(d.getType().name())
+                    .content(content)
+                    .build();
+            list.add(getDesktopLogsDto);
+        }
+        return list;
     }
 }

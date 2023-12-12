@@ -1,4 +1,4 @@
-package com.sharecom.sharecom_be.domain.rental;
+package com.sharecom.sharecom_be.domain.rental.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sharecom.sharecom_be.domain.customer.Customer;

@@ -33,7 +33,7 @@ public class DesktopLogs extends BaseEntity {
     protected Type type;
 
     public enum Type {
-        NEW_DESKTOP, UPDATE_DESKTOP, DELETE_DESKTOP, PARTS_CHANGED
+        NEW_DESKTOP, UPDATE_DESKTOP, DELETE_DESKTOP, PARTS_CHANGED, RESTORE_DESKTOP
     }
 
     @Column(name = "updated_etc", columnDefinition = "TEXT")

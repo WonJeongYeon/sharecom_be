@@ -33,5 +33,6 @@ public class GetDetailDesktopDto {
         private String name;
         private String serial;
         private String etc;
+        private boolean usedYn;
     }
 }

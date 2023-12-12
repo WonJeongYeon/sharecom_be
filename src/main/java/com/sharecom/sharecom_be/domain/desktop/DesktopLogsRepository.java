@@ -23,5 +23,7 @@ public interface DesktopLogsRepository extends JpaRepository<DesktopLogs, Intege
         nativeQuery = true)
     void saveDesktopLogs(String reason, String type, int desktopId, int oldParts, int newParts, String partsType);
 
+    List<DesktopLogs> findAllByDesktopId(Desktop desktop);
+
 }
 

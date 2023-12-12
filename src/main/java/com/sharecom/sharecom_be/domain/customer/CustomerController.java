@@ -2,6 +2,7 @@ package com.sharecom.sharecom_be.domain.customer;
 
 
 import com.sharecom.sharecom_be.domain.customer.DTO.GetAllCustomerDto;
+import com.sharecom.sharecom_be.domain.customer.DTO.GetCustomerDto;
 import com.sharecom.sharecom_be.domain.customer.DTO.GetCustomerParam;
 import com.sharecom.sharecom_be.domain.customer.DTO.PostCustomerReq;
 import com.sharecom.sharecom_be.domain.desktop.DTO.*;
@@ -43,5 +44,13 @@ public class CustomerController {
         int id = customerService.addCustomer(postCustomerReq);
 //        int id = 5;
         return new BaseResponse<>(id);
+    }
+
+    @GetMapping("/{customerId}")
+    @Operation(summary = "고객 상세정보 조회", description = "고객의 상세정보를 조회합니다. 대여정보가 포함됩니다.")
+    @ResponseBody
+    public BaseResponse<GetCustomerDto> getDetailCustomer(@PathVariable int customerId) {
+
+        return new BaseResponse<>(customerService.getCustomerDetail(customerId));
     }
 }

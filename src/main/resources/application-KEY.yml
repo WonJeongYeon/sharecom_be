@@ -3,4 +3,7 @@ datasource:
   url: jdbc:mysql://asac-server.cdq91wxy1o5u.ap-northeast-2.rds.amazonaws.com/sharecom?useLegacyDatetimeCode=false&serverTimezone=Asia/Seoul
   username: admin
   password: 1513aabb
+#  url: jdbc:mysql://sharecom-database.cvzvnmfibxbu.ap-southeast-2.rds.amazonaws.com/sharecom_database?useLegacyDatetimeCode=false&serverTimezone=Asia/Seoul
+#  username: sharecom
+#  password: sharecom1201
 

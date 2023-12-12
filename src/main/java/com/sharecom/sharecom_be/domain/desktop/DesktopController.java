@@ -72,4 +72,28 @@ public class DesktopController {
         desktopService.deleteDesktop(desktopId);
         return new BaseResponse<>("");
     }
+
+    @GetMapping("/deleted")
+    @Operation(summary = "삭제된 본체 조회", description = "삭제된 본체를 조회합니다.")
+    @ResponseBody
+    public BaseResponse<List<GetDeletedDesktopDto>> getDeletedDesktop() {
+
+        return new BaseResponse<>(desktopService.getDeletedDesktop());
+    }
+
+    @PatchMapping("/restore/{desktopId}")
+    @Operation(summary = "삭제된 본체 복구", description = "삭제된 본체를 복구합니다.")
+    @ResponseBody
+    public BaseResponse<String> restoreDesktop(@PathVariable int desktopId) {
+        return new BaseResponse<>(desktopService.restoreDesktop(desktopId));
+
+    }
+
+    @GetMapping("/logs/{serial}")
+    @Operation(summary = "본체 기록 조회", description = "본체 관리 기록을 조회합니다.")
+    @ResponseBody
+    public BaseResponse<List<GetDesktopLogsDto>> getDetailDesktopLogs(@PathVariable String serial) {
+
+        return new BaseResponse<>(desktopService.getDetailDesktopLogs(serial));
+    }
 }

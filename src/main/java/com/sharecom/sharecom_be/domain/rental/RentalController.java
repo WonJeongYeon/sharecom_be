@@ -17,10 +17,19 @@ public class RentalController {
     @PostMapping("")
     @Operation(summary = "대여정보 등록", description = "대여정보를 등록합니다. 대여할 PC는 다수일 수 있습니다.")
     @ResponseBody
-    public BaseResponse<String> saveRental(@RequestBody PostRentalReq postRentalReq) {
+    public BaseResponse<int[]> saveRental(@RequestBody PostRentalReq postRentalReq) {
 
-        int code = rentalService.saveRental(postRentalReq);
+        int[] code = rentalService.saveRental(postRentalReq);
 
-        return new BaseResponse<>(code + "");
+        return new BaseResponse<>(code);
+    }
+
+    @PostMapping("/update")
+    @Operation(summary = "대여정보 업데이트", description = "대여 정보를 업데이트합니다. 대여 로그 테이블에 저장됩니다.")
+    @ResponseBody
+    public BaseResponse<Integer> updateRentalLogs(@RequestBody PostRentalLogsReq postRentalLogsReq) {
+
+        return new BaseResponse<>(rentalService.updateRentalLogs(postRentalLogsReq));
+
     }
 }
