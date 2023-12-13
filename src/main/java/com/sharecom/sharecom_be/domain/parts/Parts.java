@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @ToString
-@Table(name = "item_dummy")
+@Table(name = "parts")
 public class Parts extends BaseEntity {
 
     @Id
