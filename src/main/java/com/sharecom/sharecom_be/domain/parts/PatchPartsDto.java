@@ -18,6 +18,7 @@ public class PatchPartsDto {
     private String serial;
     private String name;
     private String etc;
+    private String buyAt;
 
 //    private LocalDate buyAt;
 //    private boolean usedYn;

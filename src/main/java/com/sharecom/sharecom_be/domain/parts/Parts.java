@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @ToString
-@Table(name = "parts")
+@Table(name = "item_dummy")
 public class Parts extends BaseEntity {
 
     @Id
@@ -81,5 +81,9 @@ public class Parts extends BaseEntity {
 
     public void updateType(String type) {
         this.type = Type.valueOf(type);
+    }
+
+    public void updateBuyAt(LocalDate buyAt) {
+        this.buyAt = buyAt;
     }
 }

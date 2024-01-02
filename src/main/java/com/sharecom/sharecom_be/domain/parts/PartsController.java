@@ -28,6 +28,18 @@ public class PartsController {
         return new BaseResponse<>(list);
     }
 
+    @GetMapping("/{partsId}")
+    @Operation(summary = "부품 상세 조회", description = "부품 상세정보를 조회합니다.")
+    @ResponseBody
+    public BaseResponse<GetDetailPartsDto> getDetailParts(@PathVariable int partsId) throws ParseException {
+
+        return new BaseResponse<>(partsService.getDetailParts(partsId));
+
+
+
+//        return new BaseResponse<>(list);
+    }
+
     @PostMapping("")
     @Operation(summary = "부품 추가", description = "부품을 추가합니다.")
     @ResponseBody

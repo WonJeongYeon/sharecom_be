@@ -103,6 +103,7 @@ public class Desktop extends BaseEntity {
             case COOLER -> this.coolerId = parts;
             default -> throw new BaseException(BaseResponseStatus.UNKNOWN_PARTS_TYPE);
         }
+
     }
 
     public void deleteDesktop(State state) {

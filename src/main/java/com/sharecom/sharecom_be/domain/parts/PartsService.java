@@ -1,11 +1,15 @@
 package com.sharecom.sharecom_be.domain.parts;
 
+import com.sharecom.sharecom_be.domain.all.GetAllDto;
 import com.sharecom.sharecom_be.entity.BaseEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.servlet.http.Part;
 import java.net.Proxy;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +26,8 @@ public class PartsService {
 
     private final PartsRepository partsRepository;
     private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    private final EntityManager entityManager;
+
     public List<GetPartsDto> getParts(GetPartsParam getPartsParam) throws ParseException {
 
 
@@ -30,7 +36,7 @@ public class PartsService {
         LocalDate localDate;
         try {
             Date date = formatter.parse(getPartsParam.getBuy_at());
-             localDate = new java.sql.Date(date.getTime())  // java.util.Date -> java.sql.Date
+            localDate = new java.sql.Date(date.getTime())  // java.util.Date -> java.sql.Date
                     .toLocalDate();
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -49,24 +55,45 @@ public class PartsService {
         return parts;
     }
 
+    public GetDetailPartsDto getDetailParts(int partsId) {
+        Parts parts = partsRepository.findById(partsId).orElseThrow();
+        String typeQuery = switch (parts.getType().name()) {
+            case "CPU" -> "cpu";
+            case "GPU" -> "gpu";
+            case "COOLER" -> "cooler";
+            case "POWER" -> "power";
+            case "MAIN_BOARD" -> "board";
+            case "RAM" -> "ram";
+            case "SSD" -> "ssd";
+            default -> "";
+        };
+        javax.persistence.Query query = entityManager.createNativeQuery("select d.used_yn, d.serial, d.id AS desktopId, " +
+                "c.name, c.id AS customerId, " +
+                "r.start_date, r.end_date, r.etc, r.id AS rentalId, " +
+                "rl.type " +
+                "from desktop d " +
+                "left outer join rental r on r.desktop_id=d.id " +
+                "left outer join customer c on r.customer_id=c.id " +
+                "left outer join " +
+                "(select id, type, rental_id, ROW_NUMBER() OVER(PARTITION BY rental_id ORDER BY id desc) AS rn from rental_logs) rl " +
+                "on r.id=rl.rental_id where (rn=1 or rn IS NULL) " +
+                "AND d." + typeQuery + "_id = " + partsId
+//                + "order by used_yn desc"
+        );
+        JpaResultMapper jpaResultMapper = new JpaResultMapper();
+        List<GetAllDto> list = jpaResultMapper.list(query, GetAllDto.class);
+        GetDetailPartsDto getDetailPartsDto = new GetDetailPartsDto(parts.getId(), parts.getType(), parts.getName(),
+                parts.getSerial(), parts.getBuyAt(), parts.isUsedYn(), parts.getEtc(), list);
+        return getDetailPartsDto;
+
+    }
+
     public String addParts(PostPartsReq postPartsReq) {
-
-
-
-        LocalDate localDate;
-        try {
-            Date date = formatter.parse(postPartsReq.getBuyAt());
-            localDate = new java.sql.Date(date.getTime())  // java.util.Date -> java.sql.Date
-                    .toLocalDate();
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            localDate = null;
-        }
 
         Parts parts = Parts.builder()
                 .name(postPartsReq.getName())
                 .serial(postPartsReq.getSerial())
-                .buyAt(localDate)
+                .buyAt(stringToLocalDate(postPartsReq.getBuyAt()))
                 .etc(postPartsReq.getEtc())
                 .type(Parts.Type.valueOf(postPartsReq.getType()))
                 .usedAt(null)
@@ -97,6 +124,9 @@ public class PartsService {
         if (patchPartsDto.getType() != null) {
             parts.updateType(patchPartsDto.getType());
         }
+        if (!parts.getBuyAt().equals(stringToLocalDate(patchPartsDto.getBuyAt()))) {
+            parts.updateBuyAt(stringToLocalDate(patchPartsDto.getBuyAt()));
+        }
         log.info(parts.toString());
     }
 
@@ -104,5 +134,18 @@ public class PartsService {
     public void deleteParts(int partsId) {
         Parts parts = partsRepository.findById(partsId).orElseThrow();
         parts.updateState(BaseEntity.State.INACTIVE);
+    }
+
+    private LocalDate stringToLocalDate(String dateStr) {
+        LocalDate localDate;
+        try {
+            Date date = formatter.parse(dateStr);
+            localDate = new java.sql.Date(date.getTime())  // java.util.Date -> java.sql.Date
+                    .toLocalDate();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            localDate = null;
+        }
+        return localDate;
     }
 }
