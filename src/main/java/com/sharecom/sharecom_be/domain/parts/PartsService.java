@@ -65,6 +65,7 @@ public class PartsService {
         return list;
     }
 
+    @Transactional
     public String restoreParts(int partsId) {
         try {
             Parts p = partsRepository.findById(partsId).orElseThrow();
