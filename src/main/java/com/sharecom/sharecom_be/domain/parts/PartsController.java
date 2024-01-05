@@ -1,5 +1,6 @@
 package com.sharecom.sharecom_be.domain.parts;
 
+import com.sharecom.sharecom_be.domain.desktop.DTO.GetDeletedDesktopDto;
 import com.sharecom.sharecom_be.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,15 @@ public class PartsController {
         List<GetPartsDto> list = partsService.getParts(getPartsParam);
 
         return new BaseResponse<>(list);
+    }
+
+    @GetMapping("/deleted")
+    @Operation(summary = "삭제된 부품 조회", description = "삭제된 부품을 조회합니다.")
+    @ResponseBody
+    public BaseResponse<List<GetPartsDto>> getDeletedParts() {
+
+
+        return new BaseResponse<>(partsService.getDeletedParts());
     }
 
     @GetMapping("/{partsId}")

@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +54,15 @@ public class PartsService {
         List<GetPartsDto> parts = partsRepository.findAllByTypeAndNameAndSerialAndBuyAt(type, getPartsParam.getName(), getPartsParam.getSerial(), localDate, getPartsParam.getEtc(), getPartsParam.getUsedYn(), BaseEntity.State.ACTIVE);
 
         return parts;
+    }
+
+    public List<GetPartsDto> getDeletedParts() {
+        List<Parts> parts = partsRepository.findAllByState(BaseEntity.State.INACTIVE);
+        List<GetPartsDto> list = new ArrayList<>();
+        for (Parts p : parts) {
+            list.add(new GetPartsDto(p.getId(), p.getType(), p.getName(), p.getSerial(), p.getBuyAt(), p.isUsedYn(), p.getEtc()));
+        }
+        return list;
     }
 
     public GetDetailPartsDto getDetailParts(int partsId) {

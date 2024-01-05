@@ -25,5 +25,7 @@ public interface PartsRepository extends JpaRepository<Parts, Integer> {
     @Modifying
     @Transactional
     void updateParts(boolean usedYn, List<Integer> list);
+
+    List<Parts> findAllByState(BaseEntity.State state);
 }
 
