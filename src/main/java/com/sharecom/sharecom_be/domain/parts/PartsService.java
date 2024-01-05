@@ -65,6 +65,16 @@ public class PartsService {
         return list;
     }
 
+    public String restoreParts(int partsId) {
+        try {
+            Parts p = partsRepository.findById(partsId).orElseThrow();
+            p.updateState(BaseEntity.State.ACTIVE);
+        } catch (Exception e) {
+            return "실패";
+        }
+        return "성공";
+    }
+
     public GetDetailPartsDto getDetailParts(int partsId) {
         Parts parts = partsRepository.findById(partsId).orElseThrow();
         String typeQuery = switch (parts.getType().name()) {

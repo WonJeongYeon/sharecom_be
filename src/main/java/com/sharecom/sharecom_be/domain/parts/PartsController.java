@@ -38,6 +38,15 @@ public class PartsController {
         return new BaseResponse<>(partsService.getDeletedParts());
     }
 
+    @PatchMapping("/restore/{partsId}")
+    @Operation(summary = "삭제된 부품 복구", description = "삭제된 부품을 복구합니다.")
+    @ResponseBody
+    public BaseResponse<String> restoreParts(@PathVariable int partsId) {
+
+
+        return new BaseResponse<>(partsService.restoreParts(partsId));
+    }
+
     @GetMapping("/{partsId}")
     @Operation(summary = "부품 상세 조회", description = "부품 상세정보를 조회합니다.")
     @ResponseBody
