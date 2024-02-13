@@ -40,9 +40,7 @@ public class DesktopService {
 
     public List<GetDesktopDto> getDesktop(GetDesktopParam getDesktopParam) throws ParseException {
 
-        List<GetDesktopDto> desktopList = desktopRepository.findAllByUsedYn(getDesktopParam.getUsedYn(), BaseEntity.State.ACTIVE);
-
-        return desktopList;
+        return desktopRepository.findAllByUsedYn(getDesktopParam.getUsedYn(), BaseEntity.State.ACTIVE);
     }
 
     public GetDetailDesktopDto getDetailDesktop(String serial) {
@@ -54,7 +52,8 @@ public class DesktopService {
         Parts ram = desktop.getRamId();
         Parts power = desktop.getPowerId();
         Parts cooler = desktop.getCoolerId();
-        GetDetailDesktopDto getDetailDesktopDto = GetDetailDesktopDto.builder()
+
+        return GetDetailDesktopDto.builder()
                 .id(desktop.getId())
                 .serial(desktop.getSerial())
                 .usedYn(desktop.isUsedYn())
@@ -68,27 +67,14 @@ public class DesktopService {
                 .gpu(mappingPartsDto(gpu))
                 .mainBoard(mappingPartsDto(mainBoard))
                 .build();
-
-        return getDetailDesktopDto;
     }
 
     public String addDesktop(PostDesktopReq postDesktopReq) {
         String result;
-        int id;
         if (desktopRepository.existsBySerial(postDesktopReq.getSerial())) {
             return "이미 존재하는 본체 고유번호입니다.";
         }
         try {
-            id = desktopRepository.saveDesktop(postDesktopReq.getSerial(),
-                    postDesktopReq.getEtc(),
-                    false,
-                    postDesktopReq.getBoardId(),
-                    postDesktopReq.getCoolerId(),
-                    postDesktopReq.getCpuId(),
-                    postDesktopReq.getGpuId(),
-                    postDesktopReq.getPowerId(),
-                    postDesktopReq.getRamId(),
-                    postDesktopReq.getSsdId());
             List<Integer> partsList = new ArrayList<>();
             partsList.add(postDesktopReq.getBoardId());
             partsList.add(postDesktopReq.getCpuId());
@@ -183,6 +169,12 @@ public class DesktopService {
                 .reason("삭제")
                 .type(DesktopLogs.Type.DELETE_DESKTOP)
                 .build();
+
+
+        partsRepository.updateParts(false, saveDesktop(desktop, desktopLogs));
+    }
+
+    private List<Integer> saveDesktop(Desktop desktop, DesktopLogs desktopLogs) {
         desktopLogsRepository.save(desktopLogs);
 
         List<Integer> list = new ArrayList<>();
@@ -193,7 +185,7 @@ public class DesktopService {
         list.add(desktop.getPowerId().getId());
         list.add(desktop.getRamId().getId());
         list.add(desktop.getSsdId().getId());
-        partsRepository.updateParts(false, list);
+        return list;
     }
 
 
@@ -208,31 +200,18 @@ public class DesktopService {
                 .reason("복구")
                 .type(DesktopLogs.Type.RESTORE_DESKTOP)
                 .build();
-        desktopLogsRepository.save(desktopLogs);
-
-        List<Integer> list = new ArrayList<>();
-        list.add(desktop.getBoardId().getId());
-        list.add(desktop.getCoolerId().getId());
-        list.add(desktop.getCpuId().getId());
-        list.add(desktop.getGpuId().getId());
-        list.add(desktop.getPowerId().getId());
-        list.add(desktop.getRamId().getId());
-        list.add(desktop.getSsdId().getId());
-        partsRepository.updateParts(true, list);
+        partsRepository.updateParts(true, saveDesktop(desktop, desktopLogs));
         return "성공";
     }
 
     public List<GetDeletedDesktopDto> getDeletedDesktop() {
-//        List<Desktop> deletedDesktopList = desktopRepository.findByState(BaseEntity.State.INACTIVE);
 
-        List<GetDeletedDesktopDto> deletedDesktopDtoList = jpaQueryFactory.selectFrom(qDesktop).leftJoin(qDesktopLogs).on(qDesktopLogs.desktopId.id.eq(qDesktop.id))
+        return jpaQueryFactory.selectFrom(qDesktop).leftJoin(qDesktopLogs).on(qDesktopLogs.desktopId.id.eq(qDesktop.id))
                 .where(qDesktop.state.eq(BaseEntity.State.INACTIVE))
                 .transform(groupBy(qDesktop.id).list(Projections.fields(GetDeletedDesktopDto.class,
                         qDesktop.id,
                         qDesktop.serial,
                         qDesktopLogs.createdAt.as("deletedAt"))));
-
-        return deletedDesktopDtoList;
     }
 
     public List<GetDesktopLogsDto> getDetailDesktopLogs(String serial) {
