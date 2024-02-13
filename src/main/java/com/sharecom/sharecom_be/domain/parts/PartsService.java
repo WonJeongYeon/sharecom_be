@@ -9,12 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.servlet.http.Part;
-import java.net.Proxy;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,9 +48,7 @@ public class PartsService {
             type = null;
         }
 
-        List<GetPartsDto> parts = partsRepository.findAllByTypeAndNameAndSerialAndBuyAt(type, getPartsParam.getName(), getPartsParam.getSerial(), localDate, getPartsParam.getEtc(), getPartsParam.getUsedYn(), BaseEntity.State.ACTIVE);
-
-        return parts;
+        return partsRepository.findAllByTypeAndNameAndSerialAndBuyAt(type, getPartsParam.getName(), getPartsParam.getSerial(), localDate, getPartsParam.getEtc(), getPartsParam.getUsedYn(), BaseEntity.State.ACTIVE);
     }
 
     public List<GetPartsDto> getDeletedParts() {
@@ -103,9 +98,8 @@ public class PartsService {
         );
         JpaResultMapper jpaResultMapper = new JpaResultMapper();
         List<GetAllDto> list = jpaResultMapper.list(query, GetAllDto.class);
-        GetDetailPartsDto getDetailPartsDto = new GetDetailPartsDto(parts.getId(), parts.getType(), parts.getName(),
+        return new GetDetailPartsDto(parts.getId(), parts.getType(), parts.getName(),
                 parts.getSerial(), parts.getBuyAt(), parts.isUsedYn(), parts.getEtc(), list);
-        return getDetailPartsDto;
 
     }
 
