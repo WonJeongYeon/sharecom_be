@@ -29,7 +29,6 @@ import java.util.List;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     public List<GetAllCustomerDto> getAllCustomer(GetCustomerParam getCustomerParam) {
 
         return customerRepository.findAllByAny(getCustomerParam.getName(), getCustomerParam.getPhone(), getCustomerParam.getAddress(), getCustomerParam.getEtc(), BaseEntity.State.ACTIVE);
@@ -44,14 +43,13 @@ public class CustomerService {
     public GetCustomerDto getCustomerDetail(int customerId) {
         Customer customer = customerRepository.findById(customerId).get();
         List<RentalInfo> list = customerRepository.getCustomerByCustomerId(customerId);
-        GetCustomerDto getCustomerDto = GetCustomerDto.builder()
+        return GetCustomerDto.builder()
                 .name(customer.getName())
                 .address(customer.getAddress())
                 .phone(customer.getPhone())
                 .etc(customer.getEtc())
                 .desktop(list)
                 .build();
-        return getCustomerDto;
 
     }
 }

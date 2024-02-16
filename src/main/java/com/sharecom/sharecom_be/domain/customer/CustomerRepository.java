@@ -28,10 +28,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     @Transactional
     void updateCustomer(boolean rentalState, int id);
 
-//    @Query(value = "select d.id, d.serial, d.etc, rl.type, r.start_date, r.end_date, r.id, rl.insert_at from desktop d left outer join rental r on r.desktop_id=d.id left outer join rental_logs rl on r.id=rl.rental_id where r.customer_id=? order by rl.id",
-//    nativeQuery = true)
-//    List<GetCustomerDto.RentalInfo> getCustomerBy(int customerId);
-
     @Query("SELECT new com.sharecom.sharecom_be.domain.customer.DTO.RentalInfo(" +
             "d.id, d.serial, d.etc, rl.type, r.startDate, r.endDate, r.id, rl.createdAt)" +
             "FROM Desktop d" +

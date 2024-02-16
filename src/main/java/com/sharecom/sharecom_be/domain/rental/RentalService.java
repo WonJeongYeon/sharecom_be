@@ -5,7 +5,6 @@ import com.sharecom.sharecom_be.domain.customer.CustomerRepository;
 import com.sharecom.sharecom_be.domain.desktop.DesktopRepository;
 import com.sharecom.sharecom_be.domain.desktop.Entity.Desktop;
 import com.sharecom.sharecom_be.domain.rental.entity.Rental;
-import com.sharecom.sharecom_be.domain.rental.entity.RentalLogs;
 import com.sharecom.sharecom_be.exception.BaseException;
 import com.sharecom.sharecom_be.response.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.math.BigInteger;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -28,7 +25,6 @@ public class RentalService {
     private final DesktopRepository desktopRepository;
     private final CustomerRepository customerRepository;
     private final RentalLogsRepository rentalLogsRepository;
-    private final EntityManager entityManager;
 
     @Transactional
     @Modifying
@@ -42,7 +38,6 @@ public class RentalService {
                 Customer customer = customerRepository.findById(postRentalReq.getCustomerId()).get();
 
                 rentalId.add(rentalRepository.save(new Rental(postRentalReq.getStartDate(), postRentalReq.getEndDate(), postRentalReq.getEtc(), desktop, customer)).getId());
-//                rentalId.add(rentalRepository.saveRental(postRentalReq.getCustomerId(), i, postRentalReq.getStartDate(), postRentalReq.getEndDate(), postRentalReq.getEtc()));
                 desktopRepository.updateDesktop(true, i);
                 customerRepository.updateCustomer(true, postRentalReq.getCustomerId());
             } catch (Exception e) {
@@ -55,7 +50,7 @@ public class RentalService {
             rentalLogsRepository.saveRentalLogs("RESERVATION", i);
         }
 
-        if (failures.size() == 0) {
+        if (failures.isEmpty()) {
             return rentalId.stream()
                     .mapToInt(Integer::intValue)
                     .toArray();

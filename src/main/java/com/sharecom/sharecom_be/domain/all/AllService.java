@@ -1,18 +1,11 @@
 package com.sharecom.sharecom_be.domain.all;
 
-import com.sharecom.sharecom_be.domain.customer.Customer;
-import com.sharecom.sharecom_be.domain.customer.CustomerRepository;
-import com.sharecom.sharecom_be.domain.customer.DTO.*;
-import com.sharecom.sharecom_be.domain.desktop.DesktopRepository;
-import com.sharecom.sharecom_be.entity.BaseEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.qlrm.mapper.JpaResultMapper;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,7 +13,6 @@ import java.util.List;
 @Slf4j
 public class AllService {
 
-    private final DesktopRepository desktopRepository;
     private final EntityManager entityManager;
     public List<GetAllDto> getAll() {
 
@@ -36,11 +28,9 @@ public class AllService {
                         "on r.id=rl.rental_id where rn=1 or rn IS NULL order by used_yn desc");
 
 
-//        List<Query> query = desktopRepository.getAllInfo();
         JpaResultMapper jpaResultMapper = new JpaResultMapper();
-        List<GetAllDto> list = jpaResultMapper.list(query, GetAllDto.class);
 
-        return list;
+        return jpaResultMapper.list(query, GetAllDto.class);
     }
 
 
