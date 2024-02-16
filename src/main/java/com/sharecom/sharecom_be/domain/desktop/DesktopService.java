@@ -75,6 +75,7 @@ public class DesktopService {
             return "이미 존재하는 본체 고유번호입니다.";
         }
         try {
+            desktopRepository.saveDesktop(postDesktopReq.getSerial(), postDesktopReq.getEtc(), false, postDesktopReq.getBoardId(), postDesktopReq.getCoolerId(), postDesktopReq.getCpuId(), postDesktopReq.getGpuId(), postDesktopReq.getPowerId(), postDesktopReq.getRamId(), postDesktopReq.getSsdId());
             List<Integer> partsList = new ArrayList<>();
             partsList.add(postDesktopReq.getBoardId());
             partsList.add(postDesktopReq.getCpuId());
