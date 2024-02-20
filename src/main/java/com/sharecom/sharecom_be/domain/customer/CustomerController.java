@@ -1,12 +1,10 @@
 package com.sharecom.sharecom_be.domain.customer;
 
 
-import com.sharecom.sharecom_be.domain.customer.DTO.GetAllCustomerDto;
-import com.sharecom.sharecom_be.domain.customer.DTO.GetCustomerDto;
-import com.sharecom.sharecom_be.domain.customer.DTO.GetCustomerParam;
-import com.sharecom.sharecom_be.domain.customer.DTO.PostCustomerReq;
+import com.sharecom.sharecom_be.domain.customer.DTO.*;
 import com.sharecom.sharecom_be.domain.desktop.DTO.*;
 import com.sharecom.sharecom_be.domain.desktop.DesktopService;
+import com.sharecom.sharecom_be.domain.parts.PatchPartsDto;
 import com.sharecom.sharecom_be.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -52,5 +50,17 @@ public class CustomerController {
     public BaseResponse<GetCustomerDto> getDetailCustomer(@PathVariable int customerId) {
 
         return new BaseResponse<>(customerService.getCustomerDetail(customerId));
+    }
+
+    @PatchMapping("/{customerId}")
+    @Operation(summary = "고객 정보 변경", description = "고객 정보를 변경합니다.")
+    @ResponseBody
+    public BaseResponse<String> patchCustomer(@PathVariable int customerId, @RequestBody PatchCustomerDto patchCustomerDto) {
+        try {
+            customerService.patchCustomer(customerId, patchCustomerDto);
+            return new BaseResponse<>("성공");
+        } catch (Exception e) {
+            return new BaseResponse<>("실패");
+        }
     }
 }

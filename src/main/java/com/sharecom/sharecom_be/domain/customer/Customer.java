@@ -53,9 +53,13 @@ public class Customer extends BaseEntity {
         this.name = name;
     }
 
+    public void updateAddress(String address) { this.address = address; }
+    public void updatePhone(String phone) {this.phone = phone;}
+    public void updateBirth(LocalDate birth) {this.birth = birth;}
     public void updateEtc(String etc) {
         this.etc = etc;
     }
+
 
 
 
