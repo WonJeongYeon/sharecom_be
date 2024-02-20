@@ -63,4 +63,16 @@ public class CustomerController {
             return new BaseResponse<>("실패");
         }
     }
+
+    @DeleteMapping("/{customerId}")
+    @Operation(summary = "고객 정보 삭제", description = "고객 정보를 삭제합니다. 삭제된 고객 정보는 언제든지 복구할 수 있습니다.")
+    @ResponseBody
+    public BaseResponse<String> deleteParts(@PathVariable int customerId) {
+        try {
+            customerService.deleteCustomer(customerId);
+            return new BaseResponse<>("성공");
+        } catch (Exception e) {
+            return new BaseResponse<>("실패");
+        }
+    }
 }

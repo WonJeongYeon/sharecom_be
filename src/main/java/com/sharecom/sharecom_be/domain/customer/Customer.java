@@ -60,6 +60,7 @@ public class Customer extends BaseEntity {
         this.etc = etc;
     }
 
+    public void updateState(State state) {this.state = state;}
 
 
 
